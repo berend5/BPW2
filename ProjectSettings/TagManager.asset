@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - FrozenPlayer
+  - Box
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - 
   - Ground
   - Button
-  - 
+  - LastPlayerPosition
   - 
   - 
   - 

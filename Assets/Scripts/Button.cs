@@ -9,21 +9,34 @@ public class Button : MonoBehaviour
 
     public bool buttonPressed = false;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    List<string> buttonPressable = new List<string>();
+
+    void Start()
     {
-        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("FrozenPlayer"))
+        buttonPressable.Add("Player");
+        buttonPressable.Add("FrozenPlayer");
+        buttonPressable.Add("Box");
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        foreach (string currentTag in buttonPressable)
         {
-            buttonPressed = true;
-            levelExit.TriggerDoor(buttonPressed);
+            if (other.gameObject.tag == currentTag)
+            {
+                levelExit.TriggerDoor(true);
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player") && playerMovement.freezeTime == false || other.gameObject.CompareTag("FrozenPlayer"))
+        foreach (string currentTag in buttonPressable)
         {
-            buttonPressed = false;
-            levelExit.TriggerDoor(buttonPressed);
+            if (other.gameObject.tag == currentTag)
+            {
+                levelExit.TriggerDoor(false);
+            }
         }
     }
 }

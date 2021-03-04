@@ -5,7 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //movemenent
+    public GameObject player;
+
+    //movement
     private Rigidbody2D rb;
     public float runSpeed;
     public float jumpForce;
@@ -23,7 +25,9 @@ public class PlayerMovement : MonoBehaviour
     public float groundTimeToReset;
 
     //time freeze
+    public PlayerCheck playerCheck;
     public GameObject rememberPosition;
+    public PlayerLeftLPP playerLeftLPP;
     public bool freezeTime;
     public float freezeCounter;
     public float freezeResetTime;
@@ -31,16 +35,43 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        freezeCounter = freezeResetTime;
     }
 
     void FixedUpdate()
     {
         moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+
+        if (moveInput < -0.1)
+        {
+            Flip(true);
+        }
+        if (moveInput > 0.1)
+        {
+            Flip(false);
+        }
+    }
+
+    void Flip(bool isFacingRight)
+    {
+        if (isFacingRight == true)
+        {
+            transform.localScale = new Vector2(-1, 1);
+        }
+        if (isFacingRight == false)
+        {
+            transform.localScale = new Vector2(1, 1);
+        }
     }
 
     void Update()
     {
+        
+
+        //----------------------------------------MOVEMENT----------------------------------------
+
         if (Physics2D.OverlapCircle(feetPos.position, checkRadius, whatIsGround))
         {
             groundTimer = groundTimeToReset;
@@ -80,19 +111,24 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && freezeTime == false)
+        //----------------------------------------TIME FREEZE----------------------------------------
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) && freezeTime == true) //dissable freezetime
+        {
+            freezeTime = false;
+            playerCheck.ChangeCollider(false);
+            rememberPosition.SetActive(false);
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        }
+
+        else if (Input.GetKeyDown(KeyCode.Mouse0) && freezeTime == false) //active freezetime
         {
             RememberPlayerPos();
             freezeTime = true;
-            freezeCounter = freezeResetTime;
-            Debug.Log("freezetime started");
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftControl) && freezeTime == true)
-        {
-            freezeTime = false;
-            freezeCounter = freezeResetTime;
-            Debug.Log("freezetime canceled");
+            //freezeCounter = freezeResetTime;
+            playerCheck.ChangeCollider(false);
+            playerLeftLPP.ChangeLayer(1);
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
 
         if (freezeTime == true)
@@ -101,8 +137,9 @@ public class PlayerMovement : MonoBehaviour
             if (freezeCounter <= 0)
             {
                 freezeTime = false;
+                freezeCounter = freezeResetTime;
                 SendPlayerBack();
-                Debug.Log("freezetime ended");
+                playerCheck.ChangeCollider(false);
             }
         }
     }
