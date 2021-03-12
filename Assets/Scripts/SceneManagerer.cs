@@ -5,30 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class SceneManagerer : MonoBehaviour
 {
-    public GameObject pauseScreen;
-    bool isPaused = false;
-
-    void Start()
-    {
-        pauseScreen.SetActive(false);
-    }
+    public bool isPaused = false;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(isPaused == true)
-            {
-                pauseScreen.SetActive(true);
-                isPaused = false;
-                Time.timeScale = 0;
-            }
-            else
-            {
-                pauseScreen.SetActive(false);
-                isPaused = true;
-                Time.timeScale = 1;
-            }
+            SceneManager.LoadScene("Menu");
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -36,5 +19,10 @@ public class SceneManagerer : MonoBehaviour
             Scene currentScene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(currentScene.name);
         }
+    }
+
+    public void ChangeToScene(int changeTheScene)
+    {
+        SceneManager.LoadScene(changeTheScene);
     }
 }

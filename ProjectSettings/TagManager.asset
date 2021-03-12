@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FrozenPlayer
   - Box
+  - Platform
   layers:
   - Default
   - TransparentFX

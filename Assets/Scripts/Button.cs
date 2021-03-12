@@ -16,6 +16,7 @@ public class Button : MonoBehaviour
         buttonPressable.Add("Player");
         buttonPressable.Add("FrozenPlayer");
         buttonPressable.Add("Box");
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -25,6 +26,7 @@ public class Button : MonoBehaviour
             if (other.gameObject.tag == currentTag)
             {
                 levelExit.TriggerDoor(true);
+                gameObject.GetComponent<SpriteRenderer>().enabled = false;
             }
         }
     }
@@ -36,7 +38,17 @@ public class Button : MonoBehaviour
             if (other.gameObject.tag == currentTag)
             {
                 levelExit.TriggerDoor(false);
+                buttonPressed = false;
+                gameObject.GetComponent<SpriteRenderer>().enabled = true;
             }
+        }
+    }
+
+    public void Update()
+    {
+        if(buttonPressed == true)
+        {
+            //sdafsdf
         }
     }
 }

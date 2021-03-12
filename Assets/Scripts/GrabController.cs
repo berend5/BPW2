@@ -17,16 +17,22 @@ public class GrabController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        RaycastHit2D grabCheck = Physics2D.Raycast(grabDetect.position, Vector2.right * transform.localScale, rayDist);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && wantToPickUp == false)
         {
-            wantToPickUp = true;
+            if (grabCheck.collider != null && grabCheck.collider.tag == "Box")
+            {
+                wantToPickUp = true;
+            }
         }
-        else
+
+        else if (Input.GetKeyDown(KeyCode.LeftShift) && wantToPickUp == true)
         {
             wantToPickUp = false;
         }
 
-        RaycastHit2D grabCheck = Physics2D.Raycast(grabDetect.position, Vector2.right * transform.localScale, rayDist);
+        //RaycastHit2D grabCheck = Physics2D.Raycast(grabDetect.position, Vector2.right * transform.localScale, rayDist);
 
         if (grabCheck.collider != null && grabCheck.collider.tag == "Box")
         {

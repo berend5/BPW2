@@ -7,12 +7,15 @@ public class PlayerLeftLPP : MonoBehaviour
     public PlayerCheck playerCheck;
     public PlayerMovement playerMovement;
 
+    public bool playerLeft;
+
     public void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             playerCheck.ChangeCollider(true);
             ChangeLayer(8);
+            Debug.Log("hey");
         }
     }
 
@@ -20,4 +23,10 @@ public class PlayerLeftLPP : MonoBehaviour
     {
         gameObject.layer = newLayer;
     }
+    /*public void AfterCountDown()
+    {
+        playerCheck.ChangeCollider(true);
+                ChangeLayer(8);
+                Debug.Log("hey"); ;
+    }*/
 }

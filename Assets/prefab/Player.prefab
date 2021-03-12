@@ -139,7 +139,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6325486732982938128}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.72, y: -13.84, z: 4.945997}
+  m_LocalPosition: {x: -10.72, y: -13.84, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6325486732055976362}
@@ -183,6 +183,7 @@ MonoBehaviour:
   player: {fileID: 0}
   runSpeed: 7
   jumpForce: 10
+  isGrounded: 0
   feetPos: {fileID: 6325486732055976362}
   checkRadius: 0.02
   whatIsGround:
@@ -195,6 +196,8 @@ MonoBehaviour:
   playerCheck: {fileID: 0}
   rememberPosition: {fileID: 0}
   playerLeftLPP: {fileID: 0}
+  dialogue: {fileID: 0}
+  sceneManagerer: {fileID: 0}
   freezeTime: 0
   freezeCounter: 0
   freezeResetTime: 5

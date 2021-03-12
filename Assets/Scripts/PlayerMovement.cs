@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     public GameObject player;
+    public ParticleSystem ps;
 
     //movement
     private Rigidbody2D rb;
@@ -13,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce;
     private float moveInput;
 
-    private bool isGrounded;
+    public bool isGrounded;
     public Transform feetPos;
     public float checkRadius;
     public LayerMask whatIsGround;
@@ -28,13 +29,26 @@ public class PlayerMovement : MonoBehaviour
     public PlayerCheck playerCheck;
     public GameObject rememberPosition;
     public PlayerLeftLPP playerLeftLPP;
+    public Dialogue dialogue;
+    public SceneManagerer sceneManagerer;
+    public GameObject ghostPlayer;
+    public ProcessingEpic processing;
     public bool freezeTime;
     public float freezeCounter;
     public float freezeResetTime;
+    public bool coolDownIsActive = false;
+    //public float processingIntensity;
+    //public float processingIntensityDefault;
+    public float saturation;
+    public float defaultSat = 0;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        ps = GameObject.Find("Particle System").GetComponent<ParticleSystem>();
+        ghostPlayer.SetActive(false);
+        processing.GhostMode(defaultSat);
 
         freezeCounter = freezeResetTime;
     }
@@ -68,7 +82,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        
 
         //----------------------------------------MOVEMENT----------------------------------------
 
@@ -116,19 +129,32 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && freezeTime == true) //dissable freezetime
         {
             freezeTime = false;
+            coolDownIsActive = true;
+            freezeCounter = freezeResetTime;
             playerCheck.ChangeCollider(false);
             rememberPosition.SetActive(false);
             gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            Invoke("CoolDown", 1f);
+            ghostPlayer.SetActive(false);
+            processing.GhostMode(defaultSat);
         }
 
-        else if (Input.GetKeyDown(KeyCode.Mouse0) && freezeTime == false) //active freezetime
+        else if (Input.GetKeyDown(KeyCode.Mouse0) && freezeTime == false && coolDownIsActive == false) //active freezetime
         {
-            RememberPlayerPos();
-            freezeTime = true;
-            //freezeCounter = freezeResetTime;
-            playerCheck.ChangeCollider(false);
-            playerLeftLPP.ChangeLayer(1);
-            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            if(dialogue.inDialogue == false || sceneManagerer.isPaused == false)
+            {
+                RememberPlayerPos();
+                freezeTime = true;
+                playerCheck.ChangeCollider(false);
+                playerLeftLPP.ChangeLayer(1);
+                gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                ghostPlayer.SetActive(true);
+                processing.GhostMode(saturation);
+                ps.Play();
+                ps.transform.position = transform.position;
+                ParticleSystem.EmissionModule em = ps.emission;
+                em.enabled = true;
+            }
         }
 
         if (freezeTime == true)
@@ -140,8 +166,16 @@ public class PlayerMovement : MonoBehaviour
                 freezeCounter = freezeResetTime;
                 SendPlayerBack();
                 playerCheck.ChangeCollider(false);
+                gameObject.GetComponent<SpriteRenderer>().enabled = true;
+                ghostPlayer.SetActive(false);
+                processing.GhostMode(defaultSat);
             }
         }
+    }
+
+    public void CoolDown()
+    {
+        coolDownIsActive = false;
     }
 
     void RememberPlayerPos()
